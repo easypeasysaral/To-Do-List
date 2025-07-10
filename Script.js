@@ -35,17 +35,27 @@ const toogleTaskComplete = (index) => {
 const updateStats = () => {
   const compeletetask = tasks.filter((task) => task.completed).length;
   const totaltask = tasks.length;
-  const progress = (compeletetask / totaltask) * 100;
   const progressbar = document.getElementById("progress");
+  const motivationText = document.getElementById("motivationText");
 
-  progressbar.style.width = ` ${progress}%`;
-  document.getElementById(
-    "numbers"
-  ).innerText = ` ${compeletetask}/${totaltask}`;
-  if (tasks.length && compeletetask === totaltask) {
+  let progress = 0;
+  if (totaltask > 0) {
+    progress = (compeletetask / totaltask) * 100;
+  }
+
+  progressbar.style.width = `${progress}%`;
+  document.getElementById("numbers").innerText = `${compeletetask}/${totaltask}`;
+
+  if (totaltask === 0) {
+    motivationText.textContent = "Let's Go";
+  } else if (compeletetask === totaltask) {
+    motivationText.textContent = "Keep it Up";
     Animations();
+  } else {
+    motivationText.textContent = ""; // Hide message in between
   }
 };
+
 
 const deletetask = (index) => {
   tasks.splice(index, 1);
