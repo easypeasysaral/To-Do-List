@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
 from typing import Optional
 
@@ -41,4 +41,21 @@ async def create_task(task:Task):
     return {
         'message' : "new task created successfully",
         "data_recieved" : task
+    }
+    
+@app.get('/tasks/{task_id}')
+async def get_single_task(task_id : int ):
+    if task_id<0 or task_id>=len(fake_db):
+        raise HTTPException(status_code=404, detail=f"task with {task_id} not found")
+    return fake_db[task_id]
+
+@app.delete('/tasks/{task_id}')
+async def delete_task(task_id : int):
+    if task_id<0 or task_id>=len(fake_db):
+        raise HTTPException(status_code=404, detail=f"task with {task_id} not found")
+    
+    deleted_task = fake_db.pop(task_id)
+    return {
+        'message' : "Task deleted successfully",
+        'Deleted_task'  : deleted_task
     }
