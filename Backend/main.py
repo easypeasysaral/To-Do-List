@@ -1,6 +1,11 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
 from typing import Optional
+import models
+from database import engine
+
+# Yeh jaadu wali line Postgres mein actual tables create kar degi!
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title= "This is the to-do-list API")
 
