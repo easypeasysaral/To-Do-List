@@ -59,3 +59,15 @@ async def delete_task(task_id : int):
         'message' : "Task deleted successfully",
         'Deleted_task'  : deleted_task
     }
+    
+@app.put('/tasks/{task_id}')
+async def update_tasks(task_id: int, update: Task):
+    if task_id<0 or task_id>=len(fake_db):
+        raise HTTPException(status_code=404, detail = f"The task with the {task_id} not found")
+    
+    fake_db[task_id] = update
+    
+    return {
+        'message' : "Task updated successfully",
+        'task' : update
+    }
