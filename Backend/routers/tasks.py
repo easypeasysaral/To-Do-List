@@ -17,7 +17,7 @@ class Task(BaseModel):
 
 # --- 1. CREATE TASK (POST) ---
 @router.post("/")
-async def create_task(task: Task, db: Session = Depends(get_db)):
+async def create_task(task: Task, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
     # Yahan hum Pydantic (Web) data ko SQLAlchemy (DB) data mein convert kar rahe hain
     new_task = models.DBTask(
         title=task.title, 
@@ -40,7 +40,7 @@ async def get_all_tasks(db: Session = Depends(get_db), token : str = Depends(oau
     
 # --- 3. GET SINGLE TASK ---
 @router.get("/{task_id}")
-async def get_single_task(task_id: int, db: Session = Depends(get_db)):
+async def get_single_task(task_id: int, db: Session = Depends(get_db),token : str = Depends(oauth2_scheme)):
     # DB mein check karo jahan id = task_id ho
     db_task = db.query(models.DBTask).filter(models.DBTask.id == task_id).first()
     
@@ -50,7 +50,7 @@ async def get_single_task(task_id: int, db: Session = Depends(get_db)):
 
 # --- 4. DELETE TASK ---
 @router.delete("/{task_id}")
-async def delete_task(task_id: int, db: Session = Depends(get_db)):
+async def delete_task(task_id: int, db: Session = Depends(get_db),token : str = Depends(oauth2_scheme)):
     db_task = db.query(models.DBTask).filter(models.DBTask.id == task_id).first()
     
     if not db_task:
@@ -61,7 +61,7 @@ async def delete_task(task_id: int, db: Session = Depends(get_db)):
     return {"message": "Task hamesha ke liye delete ho gaya!", "deleted_task": db_task}
     
 @router.put('/{task_id}')
-async def update_tasks(task_id: int, update: Task,db : Session = Depends(get_db)):
+async def update_tasks(task_id: int, update: Task,db : Session = Depends(get_db),token : str = Depends(oauth2_scheme)):
     db_task = db.query(models.DBTask).filter(models.DBTask.id == task_id).first()
     
     if not db_task:
